@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { db } from './firebase'; // Import the db instance from the file you created
+import { db as db1} from '../firebase1'; // Import the db instance from the file you created
 import { collection, doc, getDocs ,setDoc} from 'firebase/firestore'; // Import Firestore collection, addDoc, and getDocs functions
 
 import {
@@ -43,14 +43,14 @@ const Forms = () => {
     
         try {
             // Get the current count of documents in the collection
-            const querySnapshot = await getDocs(collection(db, 'Students'));
+            const querySnapshot = await getDocs(collection(db1, 'Students'));
             const documentCount = querySnapshot.size;
     
             // Generate the document ID with padded zeros
             const documentId = String(documentCount + 1).padStart(3, '0');
     
             // Set the document with the specified ID
-            await setDoc(doc(db, 'Students', documentId), formData);
+            await setDoc(doc(db1, 'Students', documentId), formData);
     
             console.log('Form data submitted successfully');
             console.log('Document written with ID: ', documentId);

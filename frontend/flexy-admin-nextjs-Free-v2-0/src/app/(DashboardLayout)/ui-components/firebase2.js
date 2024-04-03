@@ -1,9 +1,8 @@
-// firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-const firebaseConfig = {
+const firebaseConfig2 = {
   apiKey: "AIzaSyDGNuI9RnCdimLGRFzbeswqsjBT2cgSFU8",
   authDomain: "educatum-communication.firebaseapp.com",
   projectId: "educatum-communication",
@@ -13,8 +12,8 @@ const firebaseConfig = {
   measurementId: "G-7VHSYR33DY"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app2 = initializeApp(firebaseConfig2, "firebase2");
+const auth2 = getAuth(app2);
+const db2 = getFirestore(app2);
 
-export { app, auth, db };
+export { app2 as app, auth2 as auth, db2 as db };
