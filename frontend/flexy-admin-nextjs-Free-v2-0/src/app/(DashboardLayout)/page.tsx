@@ -2,33 +2,44 @@
 import { Grid, Box } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 // components
-import SalesOverview from '@/app/(DashboardLayout)/components/dashboard/SalesOverview';
-import DailyActivity from '@/app/(DashboardLayout)/components/dashboard/DailyActivity';
-import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/ProductPerformance';
-import BlogCard from '@/app/(DashboardLayout)/components/dashboard/Blog';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import googleCalendarPlugin from '@fullcalendar/google-calendar';
+import { useState } from 'react';
 
-const Dashboard = () => {
+export default function Home() {
+  const [events, setEvents] = useState([
+    {
+      googleCalendarId: '434c3a6f1d477740be91e0f73d98da3dfbcbef70d299c5a53c542d3e40e29de5@group.calendar.google.com',
+      className: 'event'
+    }
+  ]);
+  console.log(events)
   return (
-    <PageContainer title="Dashboard" description="this is Dashboard">
-    <Box mt={3}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} lg={12}>
-          <SalesOverview />
-        </Grid>
-        {/* ------------------------- row 1 ------------------------- */}
-        <Grid item xs={12} lg={4}>
-          <DailyActivity />
-        </Grid>
-        <Grid item xs={12} lg={8}>
-          <ProductPerformance />
-        </Grid>
-        <Grid item xs={12} lg={12}>
-          <BlogCard />
-        </Grid>
-      </Grid>
-    </Box>
-  </PageContainer>
-  )
+    <>
+      <nav className="flex justify-between mb-12 border-b border-violet-100 p-4 ">
+        <h1 className="font-bold text-2xl text-gray-700">Calendar</h1>  
+      </nav>
+      <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <div className="grid grid-cols-10">
+          <div>
+            <FullCalendar
+              plugins={[dayGridPlugin, timeGridPlugin, googleCalendarPlugin]}
+              headerToolbar={{
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek'
+              }}
+              initialView="dayGridMonth"
+              nowIndicator={true}
+              selectMirror={true}
+              googleCalendarApiKey='AIzaSyCRTHDapEDol-cgIeerOAcaq_QptuM9F18'
+              eventSources={events}
+            />
+          </div>
+        </div>
+      </main>
+    </>
+  );
 }
-
-export default Dashboard;
