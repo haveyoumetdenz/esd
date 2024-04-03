@@ -2,33 +2,50 @@
 import { Grid, Box } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 // components
-import SalesOverview from '@/app/(DashboardLayout)/components/dashboard/SalesOverview';
-import DailyActivity from '@/app/(DashboardLayout)/components/dashboard/DailyActivity';
-import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/ProductPerformance';
-import BlogCard from '@/app/(DashboardLayout)/components/dashboard/Blog';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin, { Draggable, DropArg} from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import googleCalendarPlugin from '@fullcalendar/google-calendar';
+import { use, useState } from 'react';
 
-const Dashboard = () => {
+let INITIAL_EVENTS = [
+  {
+      googleCalendarId:'https://calendar.google.com/calendar/ical/denzel.toh.2022%40smu.edu.sg/public/basic.ics',
+      className:'event'
+  }
+]
+
+export default function Home() {
   return (
-    <PageContainer title="Dashboard" description="this is Dashboard">
-    <Box mt={3}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} lg={12}>
-          <SalesOverview />
-        </Grid>
-        {/* ------------------------- row 1 ------------------------- */}
-        <Grid item xs={12} lg={4}>
-          <DailyActivity />
-        </Grid>
-        <Grid item xs={12} lg={8}>
-          <ProductPerformance />
-        </Grid>
-        <Grid item xs={12} lg={12}>
-          <BlogCard />
-        </Grid>
-      </Grid>
-    </Box>
-  </PageContainer>
-  )
-}
-
-export default Dashboard;
+  <>
+  <iframe src="https://calendar.google.com/calendar/embed?src=denzel.toh.2022%40smu.edu.sg&ctz=Asia%2FSingapore" allowFullScreen width="100%" height="500px"></iframe>
+  {/* <nav className="flex justify-between mb-12 border-b border-violet-100 p-4 ">
+    <h1 className="font-bold text-2x1 text-gray-700">Calendar</h1>  
+  </nav>
+  <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div className="grid grid-cols-10">
+      <div>
+      <FullCalendar
+        plugins={[
+          dayGridPlugin,
+          interactionPlugin,
+          timeGridPlugin,
+          googleCalendarPlugin
+        ]}
+        headerToolbar={{
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth, timeGridWeek'
+        }}
+        initialView="dayGridWeek"
+        nowIndicator={true}
+        selectMirror={true}
+        googleCalendarApiKey='AIzaSyDtfQJvVR3xySXrLTVXgSnOCVFOprFcKyM'
+        eventSources={{googleCalendarId: "https://calendar.google.com/calendar/embed?src=denzel.toh.2022%40smu.edu.sg&ctz=Asia%2FSingapore"}}
+      />
+      </div>
+    </div>
+    </main> */}
+  </>
+)}
