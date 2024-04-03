@@ -28,7 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Forms = () => {
     const [formData, setFormData] = useState({
-        StudentName: 'Nirav Joshi',
+        StudentName: '',
         TelegramID: '',
         ParentName: '',
         ParentContact: '',
@@ -38,7 +38,7 @@ const Forms = () => {
     });
 
     
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
     
         try {
@@ -70,7 +70,7 @@ const Forms = () => {
         }
     };
 
-    const handleChange = (event) => {
+    const handleChange = (event: { target: { name: any; value: any; }; }) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     };

@@ -1,31 +1,29 @@
-
 'use client';
 import React, { useState } from 'react';
-import { Container, TextField, MenuItem, Box, Typography, Button } from '@mui/material';
+import { Container, TextField, MenuItem, Box, Typography, Button, Paper } from '@mui/material';
 import { db as db2 } from '../firebase2'; // Adjust the path to your firebase.js file
 import { collection, addDoc } from 'firebase/firestore';
 
 const TutorDashboard = () => {
-  const [selectedLesson, setSelectedLesson] = useState('');
+  const [selectedModule, setSelectedModule] = useState('');
   const [message, setMessage] = useState('');
-  const [selectedStudentId, setSelectedStudentId] = useState('');
 
-  // Dummy data for completed lessons
-  const completedLessons = [
-    { id: 1, title: 'Math - Algebra' },
-    { id: 2, title: 'Science - Biology' },
-    { id: 3, title: 'History - World War II' },
+  // Dummy data for completed coding modules
+  const completedModules = [
+    { id: 'mod01', title: 'JavaScript - Basics', studentId: 'ID001' },
+    { id: 'mod02', title: 'Python - Data Structures', studentId: 'ID002' },
+    { id: 'mod03', title: 'Java - Object-Oriented Programming', studentId: 'ID003' },
   ];
 
-  const handleChange = (event) => {
-    const lessonId = event.target.value;
-    setSelectedLesson(lessonId);
+  const handleChange = (event: { target: { value: any; }; }) => {
+    const moduleId = event.target.value;
+    setSelectedModule(moduleId);
 
-    // Find the selected lesson based on the lessonId
-    const lesson = completedLessons.find(lesson => lesson.id === parseInt(lessonId));
-    if (lesson) {
-      // Generate a template message based on the selected lesson
-      setMessage(`Today, we covered the topic "${lesson.title}" in class. The student showed good understanding and progress.`);
+    // Find the selected module based on the moduleId
+    const module = completedModules.find(module => module.id === moduleId);
+    if (module) {
+      // Generate a detailed template message based on the selected module
+      setMessage(`Student ID: ${module.studentId}\nModule: ${module.title}\nToday, we covered the topic "${module.title}" in class. The student showed excellent understanding of the concepts and was able to apply them effectively in coding exercises.`);
     }
   };
 
@@ -36,8 +34,8 @@ const TutorDashboard = () => {
 
       // Add a new document to the communications collection
       const newCommunicationRef = await addDoc(communicationsRef, {
-        studentID: selectedStudentId,
-        CompletedLessons: selectedLesson,
+        studentID: selectedModule.split('-')[0].trim(), // Extracting student ID from the selected module
+        CompletedModule: selectedModule.split('-')[1].trim(), // Extracting module title from the selected module
         MessageToParents: message,
         dateSent: new Date().toISOString().split('T')[0] // Format the date as "YYYY-MM-DD"
       });
@@ -49,49 +47,44 @@ const TutorDashboard = () => {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="lg">
       <Box sx={{ my: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Tutor Dashboard
-        </Typography>
-        <TextField
-          label="Student ID"
-          value={selectedStudentId}
-          onChange={(event) => setSelectedStudentId(event.target.value)}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          select
-          label="Completed Lessons"
-          value={selectedLesson}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        >
-          {completedLessons.map((lesson) => (
-            <MenuItem key={lesson.id} value={lesson.id}>
-              {lesson.title}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
-          label="Message to Parents"
-          value={message}
-          onChange={(event) => setMessage(event.target.value)}
-          multiline
-          rows={4}
-          fullWidth
-          margin="normal"
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ mt: 2 }}
-          onClick={sendMessageToFirebase}
-        >
-          Send Message
-        </Button>
+        <Paper elevation={3} sx={{ p: 4 }}>
+          <Typography variant="h4" gutterBottom>
+            Tutor Dashboard
+          </Typography>
+          <TextField
+            select
+            label="Select Completed Module"
+            value={selectedModule}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          >
+            {completedModules.map((module) => (
+              <MenuItem key={module.id} value={module.id}>
+                {`Student ID: ${module.studentId} - ${module.title}`}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            label="Message to Parents"
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+            multiline
+            rows={15}
+            fullWidth
+            margin="normal"
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+            onClick={sendMessageToFirebase}
+          >
+            Send Message
+          </Button>
+        </Paper>
       </Box>
     </Container>
   );

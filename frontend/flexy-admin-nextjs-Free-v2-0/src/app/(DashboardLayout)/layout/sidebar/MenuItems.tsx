@@ -13,13 +13,13 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Buttons",
+    title: "Progress Report",
     icon: IconCircleDot,
     href: "/ui-components/buttons",
   },
   {
     id: uniqueId(),
-    title: "Forms",
+    title: "Onboarding",
     icon: IconTable,
     href: "/ui-components/forms",
   }
