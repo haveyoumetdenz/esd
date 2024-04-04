@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { db as db1} from '../firebase1'; // Import the db instance from the file you created
 import { collection, doc, getDocs ,setDoc} from 'firebase/firestore'; // Import Firestore collection, addDoc, and getDocs functions
-
+import axios from 'axios'; // Import Axios
 import {
     Paper,
     Grid,
@@ -38,26 +38,29 @@ const Forms = () => {
     });
 
     
-    const handleSubmit = async (event: { preventDefault: () => void; }) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
     
+        // Define the API endpoint
+        const API_ENDPOINT = 'http://localhost:5000/onboarding/onboard_student';
+    
         try {
-            // Get the current count of documents in the collection
-            const querySnapshot = await getDocs(collection(db1, 'Students'));
-            const documentCount = querySnapshot.size;
+            // Structure the payload as expected by your Flask endpoint
+            const payload = {
+                name: formData.StudentName,
+                telegram: formData.TelegramID,
+                poc: [formData.ParentName, formData.ParentContact], // Adjust according to your backend expectations
+                schedule: [formData.DateTime, formData.LessonDuration, /* Num of Lessons */], // You'll need to fill in the Num of Lessons
+            };
     
-            // Generate the document ID with padded zeros
-            const documentId = String(documentCount + 1).padStart(3, '0');
+            // Make a POST request to your Flask backend with the form data
+            const response = await axios.post(API_ENDPOINT, payload);
+            
+            console.log('Response from Flask:', response.data);
     
-            // Set the document with the specified ID
-            await setDoc(doc(db1, 'Students', documentId), formData);
-    
-            console.log('Form data submitted successfully');
-            console.log('Document written with ID: ', documentId);
-    
-            // Optionally, reset form fields after submission
+            // Reset the form or handle the response as needed
             setFormData({
-                StudentName: 'Nirav Joshi',
+                StudentName: '',
                 TelegramID: '',
                 ParentName: '',
                 ParentContact: '',
@@ -69,6 +72,7 @@ const Forms = () => {
             console.error('Error submitting form data:', error);
         }
     };
+    
 
     const handleChange = (event: { target: { name: any; value: any; }; }) => {
         const { name, value } = event.target;

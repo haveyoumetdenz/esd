@@ -20,10 +20,10 @@ const TutorDashboard = () => {
     setSelectedModule(moduleId);
 
     // Find the selected module based on the moduleId
-    const module = completedModules.find(module => module.id === moduleId);
-    if (module) {
+    const xxx = completedModules.find(module => module.id === moduleId);
+    if (xxx) {
       // Generate a detailed template message based on the selected module
-      setMessage(`Student ID: ${module.studentId}\nModule: ${module.title}\nToday, we covered the topic "${module.title}" in class. The student showed excellent understanding of the concepts and was able to apply them effectively in coding exercises.`);
+      setMessage(`Student ID: ${xxx.studentId}\nModule: ${xxx.title}\nToday, we covered the topic "${xxx.title}" in class. The student showed excellent understanding of the concepts and was able to apply them effectively in coding exercises.`);
     }
   };
 
