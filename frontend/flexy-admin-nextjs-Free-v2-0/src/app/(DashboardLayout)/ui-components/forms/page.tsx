@@ -32,9 +32,9 @@ const Forms = () => {
         TelegramID: '',
         ParentName: '',
         ParentContact: '',
-        DateTime: '2024-04-08T15:00:00+08:00',
+        DateTime: '2024-04-08T15:15:00+08:00',
         LessonDuration: '',
-        Gender: 'female',
+        NumLessons: ""
     });
 
     
@@ -47,10 +47,10 @@ const Forms = () => {
         try {
             // Structure the payload as expected by your Flask endpoint
             const payload = {
-                name: formData.StudentName,
-                telegram: formData.TelegramID,
-                poc: [formData.ParentName, formData.ParentContact], // Adjust according to your backend expectations
-                schedule: [formData.DateTime, formData.LessonDuration, /* Num of Lessons */], // You'll need to fill in the Num of Lessons
+                "name": formData.StudentName,
+                "telegram": formData.TelegramID,
+                "poc": [formData.ParentName, formData.ParentContact], // Adjust according to your backend expectations
+                "schedule": [formData.DateTime, formData.LessonDuration, formData.NumLessons], // You'll need to fill in the Num of Lessons
             };
     
             // Make a POST request to your Flask backend with the form data
@@ -66,7 +66,8 @@ const Forms = () => {
                 ParentContact: '',
                 DateTime: '2024-04-08T15:00:00+08:00',
                 LessonDuration: '',
-                Gender: 'female',
+                NumLessons: ""
+             
             });
         } catch (error) {
             console.error('Error submitting form data:', error);
@@ -113,7 +114,7 @@ const Forms = () => {
                                 <TextField
                                     id="Pcontact-basic"
                                     name="ParentContact"
-                                    label="Parent Contact"
+                                    label="Parent Telegram"
                                     variant="outlined"
                                     value={formData.ParentContact}
                                     onChange={handleChange}
@@ -125,7 +126,7 @@ const Forms = () => {
                                     variant="outlined"
                                     value={formData.DateTime}
                                     onChange={handleChange}
-                                    helperText="Please enter the date and time in the format: YYYY-MM-DDTHH:MM:SS+/-HH:MM"
+                                    helperText="Enter Date & Time In This Format: YYYY-MM-DDTHH:MM:SS+/-HH:MM"
                                 />
                                 <TextField
                                     id="Duration-basic"
@@ -134,35 +135,18 @@ const Forms = () => {
                                     variant="outlined"
                                     value={formData.LessonDuration}
                                     onChange={handleChange}
-                                    helperText="Please enter duration in Hours"
+                                    helperText="Please Enter Duration In Hours"
+                                />
+                                <TextField
+                                    id="NumLessons-basic"
+                                    name="NumLessons"
+                                    label="Number of Lessons"
+                                    variant="outlined"
+                                    value={formData.NumLessons}
+                                    onChange={handleChange}
+                                    helperText="Please Enter Number of Lessons"
                                 />
 
-                                <FormControl>
-                                    <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
-                                    <RadioGroup
-                                        aria-labelledby="demo-radio-buttons-group-label"
-                                        defaultValue="female"
-                                        name="Gender"
-                                        value={formData.Gender}
-                                        onChange={handleChange}
-                                    >
-                                        <FormControlLabel
-                                            value="female"
-                                            control={<Radio />}
-                                            label="Female"
-                                        />
-                                        <FormControlLabel
-                                            value="male"
-                                            control={<Radio />}
-                                            label="Male"
-                                        />
-                                        <FormControlLabel
-                                            value="other"
-                                            control={<Radio />}
-                                            label="Other"
-                                        />
-                                    </RadioGroup>
-                                </FormControl>
                             </Stack>
                             <br />
                             <Button variant="outlined" color="primary" type="submit">
