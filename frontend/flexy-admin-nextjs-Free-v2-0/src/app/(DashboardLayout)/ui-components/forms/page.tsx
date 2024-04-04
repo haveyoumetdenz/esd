@@ -1,7 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import { db as db1} from '../firebase1'; // Import the db instance from the file you created
-import { collection, doc, getDocs ,setDoc} from 'firebase/firestore'; // Import Firestore collection, addDoc, and getDocs functions
 import axios from 'axios'; // Import Axios
 import {
     Paper,
@@ -32,7 +30,7 @@ const Forms = () => {
         TelegramID: '',
         ParentName: '',
         ParentContact: '',
-        DateTime: '2024-04-08T15:15:00+08:00',
+        DateTime: '2024-04-08T15:00:00+08:00',
         LessonDuration: '',
         NumLessons: ""
     });
@@ -40,9 +38,9 @@ const Forms = () => {
     
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-    
+        
         // Define the API endpoint
-        const API_ENDPOINT = 'http://localhost:5000/onboarding/onboard_student';
+        const API_ENDPOINT = 'http://localhost:5001/onboarding/onboard_student';
     
         try {
             // Structure the payload as expected by your Flask endpoint

@@ -218,7 +218,11 @@ def parse_onboarding_data(ch, method, properties, body):
     try:
         # Extracting necessary information from student_data
         first_lesson_start, lesson_duration_hours, num_of_lessons = student_data["schedule"]
-
+        
+        # Convert lesson duration and number of lessons to integers
+        lesson_duration_hours = int(lesson_duration_hours)
+        num_of_lessons = int(num_of_lessons)
+            
         # Calculate the end time based on the start time and lesson duration
         end_time = (datetime.fromisoformat(first_lesson_start[:-6]) + timedelta(hours=lesson_duration_hours)).isoformat() + first_lesson_start[-6:]
 
@@ -234,6 +238,7 @@ def parse_onboarding_data(ch, method, properties, body):
         ch.basic_ack(delivery_tag=method.delivery_tag)
     except Exception as e:
         print("Error: Failed to process message", str(e))
+
 
 # def populate_calendar(name, telegram, lesson_start, lesson_end, num_lessons):
 #     # Prepare the recurrence rule based on the number of lessons
@@ -443,6 +448,7 @@ def get_events_last_day():
                 'summary': event.get('summary', 'No Title'),
                 'start': event['start'].get('dateTime', event['start'].get('date')),
                 'end': event['end'].get('dateTime', event['end'].get('date')),
+                'telegram': event['extendedProperties']['private'].get('telegram', 'No Telegram Username'),
             }
             processed_events.append(event_data)
 
@@ -468,4 +474,4 @@ if __name__ == '__main__':
     rabbitmq_thread.start()
 
     # Start Flask app in the main thread
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5002)

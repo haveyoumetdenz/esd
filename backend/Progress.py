@@ -11,14 +11,14 @@ app = Flask(__name__)
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-firestore_cred = credentials.Certificate('config/progress_db_credential.json')  
+firestore_cred = credentials.Certificate('backend/config/progress_db_credential.json')  
 firebase_admin.initialize_app(firestore_cred)
 db = firestore.client()
 ########################################## Firebase Initalization Above ##########################################
 
 @app.route('/progress', methods=['GET'])
 def get_recent_events():
-    url = "http://127.0.0.1:5001/schedule/get_recent_events"
+    url = "http://127.0.0.1:5002/schedule/get_recent_events"
     
     response = invoke_http(url, method="GET")
     
@@ -117,4 +117,4 @@ if __name__ == '__main__':
     rabbitmq_thread.start()
 
     # Start Flask app in the main thread
-    app.run(debug=True, port=5003)
+    app.run(debug=True, port=5005)

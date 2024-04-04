@@ -1,48 +1,64 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Container, TextField, MenuItem, Box, Typography, Button, Paper } from '@mui/material';
-import { db as db2 } from '../firebase2'; // Adjust the path to your firebase.js file
-import { collection, addDoc } from 'firebase/firestore';
+
+interface Event {
+  id: string;
+  summary: string;
+  start: string;
+  telegram: string; // Now including Telegram username in the Event interface
+}
 
 const TutorDashboard = () => {
-  const [selectedModule, setSelectedModule] = useState('');
+  const [selectedEventId, setSelectedEventId] = useState('');
   const [message, setMessage] = useState('');
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Dummy data for completed coding modules
-  const completedModules = [
-    { id: 'mod01', title: 'JavaScript - Basics', studentId: 'ID001' },
-    { id: 'mod02', title: 'Python - Data Structures', studentId: 'ID002' },
-    { id: 'mod03', title: 'Java - Object-Oriented Programming', studentId: 'ID003' },
-  ];
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('http://localhost:5005/progress');
+        setEvents(response.data); // Make sure the response data matches the Event interface
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleChange = (event: { target: { value: any; }; }) => {
-    const moduleId = event.target.value;
-    setSelectedModule(moduleId);
+    fetchEvents();
+  }, []);
 
-    // Find the selected module based on the moduleId
-    const xxx = completedModules.find(module => module.id === moduleId);
-    if (xxx) {
-      // Generate a detailed template message based on the selected module
-      setMessage(`Student ID: ${xxx.studentId}\nModule: ${xxx.title}\nToday, we covered the topic "${xxx.title}" in class. The student showed excellent understanding of the concepts and was able to apply them effectively in coding exercises.`);
-    }
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectedEventId(event.target.value as string);
   };
 
   const sendMessageToFirebase = async () => {
+    // Find the selected event based on the selectedEventId
+    const selectedEvent = events.find(event => event.id === selectedEventId);
+    if (!selectedEvent) {
+      console.error('Selected event not found.');
+      return;
+    }
+    
+    // Using the Telegram username from the selected event
+    const telegramUsername = selectedEvent.telegram;
+    
+    const payload = {
+      telegramUsername, // Using the extracted Telegram username
+      eventID: selectedEventId,
+      report: message,
+    };
+
     try {
-      // Create a reference to the communications collection
-      const communicationsRef = collection(db2, 'communications');
-
-      // Add a new document to the communications collection
-      const newCommunicationRef = await addDoc(communicationsRef, {
-        studentID: selectedModule.split('-')[0].trim(), // Extracting student ID from the selected module
-        CompletedModule: selectedModule.split('-')[1].trim(), // Extracting module title from the selected module
-        MessageToParents: message,
-        dateSent: new Date().toISOString().split('T')[0] // Format the date as "YYYY-MM-DD"
-      });
-
-      console.log('New communication added with ID:', newCommunicationRef.id);
+      await axios.post('http://localhost:5005/progress/update_student_progress', payload);
+      alert('Progress report sent successfully.');
     } catch (error) {
-      console.error('Error adding communication to Firebase:', error);
+      console.error('Error sending progress report:', error);
+      alert('Failed to send progress report.');
     }
   };
 
@@ -53,24 +69,40 @@ const TutorDashboard = () => {
           <Typography variant="h4" gutterBottom>
             Tutor Dashboard
           </Typography>
+          {/* <Button
+            variant="contained"
+            color="secondary"
+            
+            disabled={loading}
+          >
+            {loading ? 'Fetching Events...' : 'Fetch Recent Events'}
+          </Button> */}
           <TextField
             select
-            label="Select Completed Module"
-            value={selectedModule}
+            label="Select Event"
+            value={selectedEventId}
             onChange={handleChange}
             fullWidth
             margin="normal"
           >
-            {completedModules.map((module) => (
-              <MenuItem key={module.id} value={module.id}>
-                {`Student ID: ${module.studentId} - ${module.title}`}
-              </MenuItem>
-            ))}
+            {events.map((event) => {
+              const eventStartDate = new Date(event.start);
+              const formattedStart = eventStartDate.toLocaleString('en-SG', {
+                timeZone: 'Asia/Singapore',
+                day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true
+              });
+
+              return (
+                <MenuItem key={event.id} value={event.id}>
+                  {`${event.summary} @ ${formattedStart} - @${event.telegram}`}
+                </MenuItem>
+              );
+            })}
           </TextField>
           <TextField
             label="Message to Parents"
             value={message}
-            onChange={(event) => setMessage(event.target.value)}
+            onChange={(e) => setMessage(e.target.value)}
             multiline
             rows={15}
             fullWidth
@@ -82,7 +114,7 @@ const TutorDashboard = () => {
             sx={{ mt: 2 }}
             onClick={sendMessageToFirebase}
           >
-            Send Message
+            Send Progress Report
           </Button>
         </Paper>
       </Box>

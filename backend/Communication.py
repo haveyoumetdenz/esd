@@ -16,7 +16,7 @@ def prepare_upcoming_lessons():
     telegram_username = payload.get("telegram_username")
 
     # THis is sending to calender
-    url = "http://127.0.0.1:5001/schedule/fetch_upcoming_lessons"
+    url = "http://127.0.0.1:5002/schedule/fetch_upcoming_lessons"
     payload = {
         "telegram_username": telegram_username,
     }
@@ -51,7 +51,7 @@ def get_weekly_available_timeslots():
         return jsonify({"error": "Event ID is required"}), 400
 
     # This is sending to calendar
-    url = "http://127.0.0.1:5001/schedule/find_available_slots_week"
+    url = "http://127.0.0.1:5002/schedule/find_available_slots_week"
     response = invoke_http(url, method="POST", json={"selected_lesson_eventID": selected_lesson_eventID})
 
     if response.get("code",200) == 200:
@@ -84,7 +84,7 @@ def update_reschedule():
 
 def publish_reschedule_message(reschedule_data):
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters("localhost")
+        pika.ConnectionParameters(host='localhost')
     )
     channel = connection.channel()
     channel.queue_declare(queue = "rescheduling")
@@ -97,4 +97,6 @@ def publish_reschedule_message(reschedule_data):
     connection.close()
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # app.run(debug=True, port=5003)
+    
+    app.run(debug=True,host='0.0.0.0', port=5003)

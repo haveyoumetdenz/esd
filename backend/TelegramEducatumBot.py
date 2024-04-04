@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv("config/.env")
+load_dotenv("backend/config/.env")
 
 # Now you can access the TELEGRAM_TOKEN environment variable
 TOKEN = os.getenv("TELEGRAM_TOKEN")
@@ -63,7 +63,7 @@ def prepare_upcoming_lessons(call):
     telegram_username = call.from_user.username
     outgoing_message = "Which upcoming lesson would you reschedule?"
     markup = types.InlineKeyboardMarkup()
-    url = "http://127.0.0.1:5000/communication/prepare_upcoming_lessons"
+    url = "http://127.0.0.1:5003/communication/prepare_upcoming_lessons"
 
     payload = {
         "telegram_username": telegram_username,
@@ -90,7 +90,7 @@ def prepare_upcoming_lessons(call):
 def upcoming_lesson_selection(call):
     outgoing_message = "Select an available date!"
     markup = types.InlineKeyboardMarkup()
-    url = "http://127.0.0.1:5000/communication/get_weekly_available_timeslots"
+    url = "http://127.0.0.1:5003/communication/get_weekly_available_timeslots"
     selected_lesson_eventID = call.data.split('_')[1]
 
     payload = {'selected_lesson_eventID': selected_lesson_eventID}
@@ -124,7 +124,7 @@ def upcoming_lesson_selection(call):
 @bot.callback_query_handler(func=lambda call: call.data.startswith('newdate_'))
 def handle_newdate_selection(call):
     
-    url = "http://127.0.0.1:5000/communication/update_reschedule"
+    url = "http://127.0.0.1:5003/communication/update_reschedule"
 
     username = call.from_user.username
     eventID = call.data.split('_')[1]  # Extract the eventID
